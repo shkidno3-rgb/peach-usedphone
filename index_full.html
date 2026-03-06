@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>피치중고폰 - 중고폰 거래 플랫폼</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+        .bounce-animation {
+            animation: bounce 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="min-h-screen bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50">
+            <!-- 헤더 -->
+            <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-rose-200">
+                <div class="max-w-6xl mx-auto px-6 py-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-4">
+                            <div class="text-5xl bounce-animation">🍑</div>
+                            <div>
+                                <h1 class="text-3xl font-bold bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">
+                                    피치중고폰
+                                </h1>
+                                <p class="text-sm text-slate-600">중고폰 거래의 신뢰할 수 있는 가이드</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 bg-emerald-100 border border-emerald-300 rounded-lg px-4 py-2">
+                            <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                            <span class="text-sm font-semibold text-emerald-700">오늘 방문자: 3,847명</span>
+                        </div>
+                    </div>
+
+                    <!-- 탭 -->
+                    <div class="flex gap-4 border-t border-rose-200 pt-3">
+                        <button onclick="showTab('search')" id="tab-search" class="px-4 py-2 font-semibold text-rose-600 border-b-2 border-rose-600">
+                            🔍 시세검색
+                        </button>
+                        <button onclick="showTab('reviews')" id="tab-reviews" class="px-4 py-2 font-semibold text-slate-600 border-b-2 border-transparent hover:text-slate-700">
+                            ⭐ 후기
+                        </button>
+                        <button onclick="showTab('trending')" id="tab-trending" class="px-4 py-2 font-semibold text-slate-600 border-b-2 border-transparent hover:text-slate-700">
+                            📈 트렌드
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 메인 콘텐츠 -->
+            <main class="max-w-6xl mx-auto px-6 py-8">
+
+                <!-- 시세검색 탭 -->
+                <div id="content-search" class="tab-content">
+                    <div class="relative mb-8">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="휴대폰 모델 검색..."
+                            onkeyup="filterPhones()"
+                            class="w-full pl-12 pr-4 py-3 rounded-lg bg-white border border-rose-200 focus:border-rose-500 focus:outline-none shadow-sm"
+                        />
+                    </div>
+
+                    <div id="phoneGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- 카드가 JavaScript로 생성됨 -->
+                    </div>
+                </div>
+
+                <!-- 후기 탭 -->
+                <div id="content-reviews" class="tab-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-slate-900">구매/판매 후기</h2>
+                        <button onclick="toggleReviewForm()" class="bg-gradient-to-r from-rose-400 to-orange-500 text-white px-4 py-2 rounded-lg font-semibold hover:from-rose-500 hover:to-orange-600 transition-all">
+                            + 후기 작성
+                        </button>
+                    </div>
+
+                    <!-- 후기 작성 폼 -->
+                    <div id="reviewForm" class="bg-white rounded-xl p-6 border border-rose-200 mb-6 hidden">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">새로운 후기 작성</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">거래 유형</label>
+                                <div class="flex gap-4">
+                                    <label><input type="radio" name="reviewType" value="purchase" checked /> 구매</label>
+                                    <label><input type="radio" name="reviewType" value="sale" /> 판매</label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">휴대폰 모델</label>
+                                <select id="reviewPhone" class="w-full px-3 py-2 rounded-lg bg-white border border-rose-200">
+                                    <option value="">선택하세요</option>
+                                    <option value="iPhone 14 Pro Max">iPhone 14 Pro Max</option>
+                                    <option value="iPhone 13 Pro">iPhone 13 Pro</option>
+                                    <option value="iPhone 12">iPhone 12</option>
+                                    <option value="Galaxy S23 Ultra">Galaxy S23 Ultra</option>
+                                    <option value="Galaxy S22">Galaxy S22</option>
+                                    <option value="Galaxy A53">Galaxy A53</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">평점</label>
+                                <div class="flex gap-1">
+                                    <button onclick="setRating(1)" class="text-2xl star" data-rating="1">★</button>
+                                    <button onclick="setRating(2)" class="text-2xl star" data-rating="2">★</button>
+                                    <button onclick="setRating(3)" class="text-2xl star" data-rating="3">★</button>
+                                    <button onclick="setRating(4)" class="text-2xl star" data-rating="4">★</button>
+                                    <button onclick="setRating(5)" class="text-2xl star" data-rating="5">★</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">후기 내용</label>
+                                <textarea id="reviewContent" placeholder="거래 경험을 작성해주세요..." class="w-full px-3 py-2 rounded-lg bg-white border border-rose-200 h-32 resize-none"></textarea>
+                            </div>
+                            <button onclick="addReview()" class="w-full bg-gradient-to-r from-rose-400 to-orange-500 text-white py-2 rounded-lg font-semibold hover:from-rose-500 hover:to-orange-600">
+                                후기 등록
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 후기 목록 -->
+                    <div id="reviewsList" class="space-y-4">
+                        <!-- 후기가 JavaScript로 생성됨 -->
+                    </div>
+                </div>
+
+                <!-- 트렌드 탭 -->
+                <div id="content-trending" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6">시장 트렌드</h2>
+
+                    <!-- 방문자 통계 -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-xl p-4 border border-emerald-300">
+                            <p class="text-sm text-slate-600">오늘 방문자</p>
+                            <p class="text-3xl font-bold text-emerald-700">3,847</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl p-4 border border-blue-300">
+                            <p class="text-sm text-slate-600">이번주 방문자</p>
+                            <p class="text-3xl font-bold text-blue-700">24,568</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl p-4 border border-purple-300">
+                            <p class="text-sm text-slate-600">이번달 방문자</p>
+                            <p class="text-3xl font-bold text-purple-700">98,234</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-pink-100 to-pink-50 rounded-xl p-4 border border-pink-300">
+                            <p class="text-sm text-slate-600">증가율</p>
+                            <p class="text-3xl font-bold text-pink-700">+12.3%</p>
+                        </div>
+                    </div>
+
+                    <!-- 순위 섹션 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- 가격 상승 -->
+                        <div class="bg-white rounded-xl p-6 border border-rose-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📈 가격 상승</h3>
+                            <div class="space-y-2">
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between">
+                                    <span class="font-semibold text-sm">iPhone 14 Pro Max</span>
+                                    <span class="text-emerald-600 font-bold text-sm">+2.3%</span>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between">
+                                    <span class="font-semibold text-sm">iPhone 13 Pro</span>
+                                    <span class="text-emerald-600 font-bold text-sm">+1.8%</span>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between">
+                                    <span class="font-semibold text-sm">Galaxy S23 Ultra</span>
+                                    <span class="text-emerald-600 font-bold text-sm">+2.1%</span>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between">
+                                    <span class="font-semibold text-sm">Galaxy S22</span>
+                                    <span class="text-emerald-600 font-bold text-sm">+0.9%</span>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between">
+                                    <span class="font-semibold text-sm">Galaxy A53</span>
+                                    <span class="text-emerald-600 font-bold text-sm">+1.2%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 인기 모델 -->
+                        <div class="bg-white rounded-xl p-6 border border-rose-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">🔥 인기 모델</h3>
+                            <div class="space-y-2">
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between items-center">
+                                    <span class="font-semibold text-sm">#1 iPhone 12</span>
+                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">201건</span>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between items-center">
+                                    <span class="font-semibold text-sm">#2 iPhone 13 Pro</span>
+                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">156건</span>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between items-center">
+                                    <span class="font-semibold text-sm">#3 Galaxy S22</span>
+                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">123건</span>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between items-center">
+                                    <span class="font-semibold text-sm">#4 Galaxy A53</span>
+                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">87건</span>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg flex justify-between items-center">
+                                    <span class="font-semibold text-sm">#5 iPhone 14 Pro Max</span>
+                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">89건</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 판매량 순위 -->
+                        <div class="bg-white rounded-xl p-6 border border-rose-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📤 판매량 순위</h3>
+                            <div class="space-y-2">
+                                <div class="p-2 bg-rose-50 rounded-lg">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-bold">#1 iPhone 12</span>
+                                        <span class="text-sm font-bold text-rose-600">378건</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-2 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-bold">#2 iPhone 13 Pro</span>
+                                        <span class="text-sm font-bold text-rose-600">289건</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-gray-300 to-gray-400 h-2 rounded-full" style="width: 76%"></div>
+                                    </div>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-bold">#3 Galaxy S22</span>
+                                        <span class="text-sm font-bold text-rose-600">234건</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-orange-400 to-orange-500 h-2 rounded-full" style="width: 62%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 구매량 순위 -->
+                        <div class="bg-white rounded-xl p-6 border border-rose-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">📥 구매량 순위</h3>
+                            <div class="space-y-2">
+                                <div class="p-2 bg-rose-50 rounded-lg">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-bold">#1 iPhone 12</span>
+                                        <span class="text-sm font-bold text-blue-600">401건</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-bold">#2 iPhone 13 Pro</span>
+                                        <span class="text-sm font-bold text-blue-600">267건</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-cyan-400 to-cyan-500 h-2 rounded-full" style="width: 67%"></div>
+                                    </div>
+                                </div>
+                                <div class="p-2 bg-rose-50 rounded-lg">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-bold">#3 Galaxy S22</span>
+                                        <span class="text-sm font-bold text-blue-600">198건</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2">
+                                        <div class="bg-gradient-to-r from-sky-400 to-sky-500 h-2 rounded-full" style="width: 49%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // 휴대폰 데이터
+        const phones = [
+            { name: 'iPhone 14 Pro Max', year: 2022, grades: [
+                { grade: 'S급', price: 700000 },
+                { grade: 'A급', price: 650000 },
+                { grade: 'B급', price: 600000 },
+                { grade: 'C급', price: 540000 }
+            ], trend: '+2.3%', listings: 89 },
+            { name: 'iPhone 13 Pro', year: 2021, grades: [
+                { grade: 'S급', price: 580000 },
+                { grade: 'A급', price: 540000 },
+                { grade: 'B급', price: 500000 },
+                { grade: 'C급', price: 450000 }
+            ], trend: '+1.8%', listings: 156 },
+            { name: 'iPhone 12', year: 2020, grades: [
+                { grade: 'S급', price: 440000 },
+                { grade: 'A급', price: 410000 },
+                { grade: 'B급', price: 380000 },
+                { grade: 'C급', price: 330000 }
+            ], trend: '-0.5%', listings: 201 },
+            { name: 'Galaxy S23 Ultra', year: 2023, grades: [
+                { grade: 'S급', price: 750000 },
+                { grade: 'A급', price: 700000 },
+                { grade: 'B급', price: 650000 },
+                { grade: 'C급', price: 580000 }
+            ], trend: '+2.1%', listings: 67 },
+            { name: 'Galaxy S22', year: 2022, grades: [
+                { grade: 'S급', price: 480000 },
+                { grade: 'A급', price: 450000 },
+                { grade: 'B급', price: 410000 },
+                { grade: 'C급', price: 360000 }
+            ], trend: '+0.9%', listings: 123 },
+            { name: 'Galaxy A53', year: 2022, grades: [
+                { grade: 'S급', price: 310000 },
+                { grade: 'A급', price: 280000 },
+                { grade: 'B급', price: 250000 },
+                { grade: 'C급', price: 210000 }
+            ], trend: '+1.2%', listings: 87 }
+        ];
+
+        let reviews = [
+            { type: '구매', phone: 'iPhone 13 Pro', rating: 5, author: '김민지', date: '2024.03.05', content: '상태가 완벽합니다!' },
+            { type: '판매', phone: 'Galaxy S21', rating: 4, author: '박준호', date: '2024.03.03', content: '거래가 빨랐습니다!' },
+            { type: '구매', phone: 'iPhone 12', rating: 5, author: '이수연', date: '2024.03.01', content: '매우 만족합니다!' }
+        ];
+
+        let currentRating = 5;
+
+        // 탭 전환
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('content-' + tabName).classList.remove('hidden');
+            
+            document.querySelectorAll('[id^="tab-"]').forEach(btn => {
+                btn.classList.remove('text-rose-600', 'border-rose-600');
+                btn.classList.add('text-slate-600', 'border-transparent');
+            });
+            document.getElementById('tab-' + tabName).classList.add('text-rose-600', 'border-rose-600');
+            document.getElementById('tab-' + tabName).classList.remove('text-slate-600', 'border-transparent');
+        }
+
+        // 휴대폰 필터링 및 표시
+        function filterPhones() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = phones.filter(p => p.name.toLowerCase().includes(search));
+            displayPhones(filtered);
+        }
+
+        function displayPhones(phoneList) {
+            const grid = document.getElementById('phoneGrid');
+            grid.innerHTML = phoneList.map(phone => `
+                <div class="bg-white rounded-xl p-6 border border-rose-200 hover:border-rose-400 hover:shadow-lg cursor-pointer transition-all">
+                    <div class="text-6xl text-center mb-4">📱</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">${phone.name}</h3>
+                    <p class="text-sm text-slate-600 mb-4">${phone.year}년 출시 · 거래량 ${phone.listings}건</p>
+                    
+                    <div class="space-y-2 mb-4 border-t border-rose-200 pt-4">
+                        ${phone.grades.map(g => `
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="font-semibold text-slate-700">${g.grade}</span>
+                                <span class="text-rose-600 font-bold">₩${(g.price/10000).toFixed(0)}만</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 border-t border-rose-200">
+                        <span class="text-sm font-bold ${phone.trend.startsWith('+') ? 'text-emerald-600' : 'text-red-600'}">${phone.trend}</span>
+                        <button class="bg-gradient-to-r from-rose-400 to-orange-500 text-white px-4 py-2 rounded-lg font-semibold hover:from-rose-500 hover:to-orange-600 transition-all text-sm">
+                            상세보기
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 후기 기능
+        function toggleReviewForm() {
+            document.getElementById('reviewForm').classList.toggle('hidden');
+        }
+
+        function setRating(rating) {
+            currentRating = rating;
+            document.querySelectorAll('.star').forEach((star, idx) => {
+                if (idx < rating) {
+                    star.classList.add('text-amber-400');
+                    star.classList.remove('text-slate-400');
+                } else {
+                    star.classList.remove('text-amber-400');
+                    star.classList.add('text-slate-400');
+                }
+            });
+        }
+
+        function addReview() {
+            const phone = document.getElementById('reviewPhone').value;
+            const content = document.getElementById('reviewContent').value;
+            const type = document.querySelector('input[name="reviewType"]:checked').value === 'purchase' ? '구매' : '판매';
+            
+            if (!phone || !content) {
+                alert('모든 항목을 입력해주세요!');
+                return;
+            }
+
+            reviews.unshift({
+                type: type,
+                phone: phone,
+                rating: currentRating,
+                author: '익명의 사용자',
+                date: new Date().toLocaleDateString('ko-KR'),
+                content: content
+            });
+
+            document.getElementById('reviewContent').value = '';
+            setRating(5);
+            displayReviews();
+            toggleReviewForm();
+        }
+
+        function displayReviews() {
+            const list = document.getElementById('reviewsList');
+            list.innerHTML = reviews.map(review => `
+                <div class="bg-white rounded-xl p-6 border border-rose-200">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold ${review.type === '구매' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}">
+                                ${review.type}
+                            </span>
+                            <h4 class="font-bold text-lg text-rose-600 mt-2">${review.phone}</h4>
+                            <p class="text-sm text-slate-600">${review.author} · ${review.date}</p>
+                        </div>
+                        <div class="flex">
+                            ${Array(review.rating).fill('★').map(() => '<span class="text-amber-400 text-lg">★</span>').join('')}
+                            ${Array(5-review.rating).fill('★').map(() => '<span class="text-slate-300 text-lg">★</span>').join('')}
+                        </div>
+                    </div>
+                    <p class="text-slate-700">${review.content}</p>
+                </div>
+            `).join('');
+        }
+
+        // 초기 로드
+        window.addEventListener('DOMContentLoaded', () => {
+            displayPhones(phones);
+            displayReviews();
+            setRating(5);
+        });
+    </script>
+</body>
+</html>
