@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>피치중고폰</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body style="margin:0; padding:0;">
+    <div style="min-height:100vh; background:linear-gradient(135deg, #fdf2f8 0%, #fed7aa 50%, #fef3c7 100%);">
+        
+        <!-- 헤더 -->
+        <header style="position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.9); border-bottom:1px solid #fbb6ce; padding:20px;">
+            <div style="max-width:1280px; margin:0 auto; padding:0 20px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:15px;">
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <div style="font-size:40px;">🍑</div>
+                        <div>
+                            <h1 style="margin:0; font-size:28px; font-weight:bold; color:#f43f5e;">피치중고폰</h1>
+                            <p style="margin:0; font-size:13px; color:#666;">중고폰 거래 플랫폼</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; background:#d1fae5; padding:8px 16px; border-radius:8px;">
+                        <span style="font-size:13px; font-weight:600; color:#047857;">오늘: 3,847명</span>
+                    </div>
+                </div>
+
+                <!-- 탭 버튼 -->
+                <div style="display:flex; gap:20px; border-top:1px solid #fbb6ce; padding-top:10px;">
+                    <button onclick="showSearch()" id="searchBtn" style="padding:8px 16px; background:none; border:none; border-bottom:2px solid #f43f5e; color:#f43f5e; font-weight:600; cursor:pointer; font-size:16px;">🔍 시세검색</button>
+                    <button onclick="showReviews()" id="reviewsBtn" style="padding:8px 16px; background:none; border:none; border-bottom:2px solid transparent; color:#666; font-weight:600; cursor:pointer; font-size:16px;">⭐ 후기</button>
+                    <button onclick="showTrending()" id="trendingBtn" style="padding:8px 16px; background:none; border:none; border-bottom:2px solid transparent; color:#666; font-weight:600; cursor:pointer; font-size:16px;">📈 트렌드</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 콘텐츠 -->
+        <main style="max-width:1280px; margin:0 auto; padding:30px 20px;">
+            
+            <!-- 시세검색 -->
+            <div id="searchTab" style="display:block;">
+                <input type="text" id="search" placeholder="휴대폰 검색..." onkeyup="search()" style="width:100%; padding:12px; border:1px solid #fbb6ce; border-radius:8px; font-size:16px; margin-bottom:20px; box-sizing:border-box;">
+                <div id="phones" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px;"></div>
+            </div>
+
+            <!-- 후기 -->
+            <div id="reviewsTab" style="display:none;">
+                <button onclick="toggleForm()" style="background:#f43f5e; color:white; padding:10px 20px; border:none; border-radius:8px; font-weight:600; margin-bottom:20px; cursor:pointer;">+ 후기 작성</button>
+                
+                <div id="form" style="display:none; background:white; padding:20px; border-radius:8px; margin-bottom:20px; border:1px solid #fbb6ce;">
+                    <h3 style="margin-top:0;">후기 작성</h3>
+                    <select id="phone" style="width:100%; padding:8px; margin:10px 0; border:1px solid #fbb6ce; border-radius:4px;">
+                        <option>선택</option>
+                        <option>iPhone 14 Pro Max</option>
+                        <option>iPhone 13 Pro</option>
+                        <option>iPhone 12</option>
+                        <option>Galaxy S23 Ultra</option>
+                        <option>Galaxy S22</option>
+                        <option>Galaxy A53</option>
+                    </select>
+                    <textarea id="content" placeholder="후기 입력..." style="width:100%; padding:8px; height:100px; border:1px solid #fbb6ce; border-radius:4px; margin:10px 0; box-sizing:border-box;"></textarea>
+                    <button onclick="addReview()" style="background:#f43f5e; color:white; padding:10px 20px; border:none; border-radius:4px; cursor:pointer; width:100%;">등록</button>
+                </div>
+
+                <div id="reviews" style="display:grid; gap:15px;"></div>
+            </div>
+
+            <!-- 트렌드 -->
+            <div id="trendingTab" style="display:none;">
+                <h2 style="margin-top:0;">시장 트렌드</h2>
+                
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:30px;">
+                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #fbb6ce;">
+                        <p style="margin:0; color:#666; font-size:12px;">오늘 방문자</p>
+                        <p style="margin:5px 0 0 0; font-size:24px; font-weight:bold; color:#047857;">3,847명</p>
+                    </div>
+                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #fbb6ce;">
+                        <p style="margin:0; color:#666; font-size:12px;">이번주 방문자</p>
+                        <p style="margin:5px 0 0 0; font-size:24px; font-weight:bold; color:#1e40af;">24,568명</p>
+                    </div>
+                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #fbb6ce;">
+                        <p style="margin:0; color:#666; font-size:12px;">이번달 방문자</p>
+                        <p style="margin:5px 0 0 0; font-size:24px; font-weight:bold; color:#7e22ce;">98,234명</p>
+                    </div>
+                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #fbb6ce;">
+                        <p style="margin:0; color:#666; font-size:12px;">증가율</p>
+                        <p style="margin:5px 0 0 0; font-size:24px; font-weight:bold; color:#be185d;">+12.3%</p>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:15px;">
+                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #fbb6ce;">
+                        <h3 style="margin-top:0;">📈 가격 상승</h3>
+                        <div style="font-size:13px;">
+                            <div style="padding:5px 0;">iPhone 14 Pro Max <span style="float:right; color:#059669; font-weight:bold;">+2.3%</span></div>
+                            <div style="padding:5px 0;">iPhone 13 Pro <span style="float:right; color:#059669; font-weight:bold;">+1.8%</span></div>
+                            <div style="padding:5px 0;">Galaxy S23 Ultra <span style="float:right; color:#059669; font-weight:bold;">+2.1%</span></div>
+                            <div style="padding:5px 0;">Galaxy S22 <span style="float:right; color:#059669; font-weight:bold;">+0.9%</span></div>
+                        </div>
+                    </div>
+
+                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #fbb6ce;">
+                        <h3 style="margin-top:0;">🔥 인기 모델</h3>
+                        <div style="font-size:13px;">
+                            <div style="padding:5px 0;">#1 iPhone 12 <span style="float:right;">201건</span></div>
+                            <div style="padding:5px 0;">#2 iPhone 13 Pro <span style="float:right;">156건</span></div>
+                            <div style="padding:5px 0;">#3 Galaxy S22 <span style="float:right;">123건</span></div>
+                            <div style="padding:5px 0;">#4 Galaxy A53 <span style="float:right;">87건</span></div>
+                        </div>
+                    </div>
+
+                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #fbb6ce;">
+                        <h3 style="margin-top:0;">📤 판매량 순위</h3>
+                        <div style="font-size:13px;">
+                            <div style="padding:5px 0;">#1 iPhone 12 <span style="float:right; color:#dc2626;">378건</span></div>
+                            <div style="background:#e5e7eb; height:6px; border-radius:3px; margin:3px 0;"><div style="background:#fbbf24; height:100%; border-radius:3px; width:100%;"></div></div>
+                            <div style="padding:5px 0; margin-top:10px;">#2 iPhone 13 Pro <span style="float:right; color:#dc2626;">289건</span></div>
+                            <div style="background:#e5e7eb; height:6px; border-radius:3px; margin:3px 0;"><div style="background:#fbbf24; height:100%; border-radius:3px; width:76%;"></div></div>
+                        </div>
+                    </div>
+
+                    <div style="background:white; padding:15px; border-radius:8px; border:1px solid #fbb6ce;">
+                        <h3 style="margin-top:0;">📥 구매량 순위</h3>
+                        <div style="font-size:13px;">
+                            <div style="padding:5px 0;">#1 iPhone 12 <span style="float:right; color:#2563eb;">401건</span></div>
+                            <div style="background:#e5e7eb; height:6px; border-radius:3px; margin:3px 0;"><div style="background:#3b82f6; height:100%; border-radius:3px; width:100%;"></div></div>
+                            <div style="padding:5px 0; margin-top:10px;">#2 iPhone 13 Pro <span style="float:right; color:#2563eb;">267건</span></div>
+                            <div style="background:#e5e7eb; height:6px; border-radius:3px; margin:3px 0;"><div style="background:#3b82f6; height:100%; border-radius:3px; width:67%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const phones = [
+            {name: 'iPhone 14 Pro Max', year: 2022, prices: [70, 65, 60, 54], trend: '+2.3%'},
+            {name: 'iPhone 13 Pro', year: 2021, prices: [58, 54, 50, 45], trend: '+1.8%'},
+            {name: 'iPhone 12', year: 2020, prices: [44, 41, 38, 33], trend: '-0.5%'},
+            {name: 'Galaxy S23 Ultra', year: 2023, prices: [75, 70, 65, 58], trend: '+2.1%'},
+            {name: 'Galaxy S22', year: 2022, prices: [48, 45, 41, 36], trend: '+0.9%'},
+            {name: 'Galaxy A53', year: 2022, prices: [31, 28, 25, 21], trend: '+1.2%'}
+        ];
+
+        let reviews = [];
+
+        function showSearch() {
+            document.getElementById('searchTab').style.display = 'block';
+            document.getElementById('reviewsTab').style.display = 'none';
+            document.getElementById('trendingTab').style.display = 'none';
+            document.getElementById('searchBtn').style.borderBottom = '2px solid #f43f5e';
+            document.getElementById('searchBtn').style.color = '#f43f5e';
+            document.getElementById('reviewsBtn').style.borderBottom = '2px solid transparent';
+            document.getElementById('reviewsBtn').style.color = '#666';
+            document.getElementById('trendingBtn').style.borderBottom = '2px solid transparent';
+            document.getElementById('trendingBtn').style.color = '#666';
+        }
+
+        function showReviews() {
+            document.getElementById('searchTab').style.display = 'none';
+            document.getElementById('reviewsTab').style.display = 'block';
+            document.getElementById('trendingTab').style.display = 'none';
+            document.getElementById('searchBtn').style.borderBottom = '2px solid transparent';
+            document.getElementById('searchBtn').style.color = '#666';
+            document.getElementById('reviewsBtn').style.borderBottom = '2px solid #f43f5e';
+            document.getElementById('reviewsBtn').style.color = '#f43f5e';
+            document.getElementById('trendingBtn').style.borderBottom = '2px solid transparent';
+            document.getElementById('trendingBtn').style.color = '#666';
+        }
+
+        function showTrending() {
+            document.getElementById('searchTab').style.display = 'none';
+            document.getElementById('reviewsTab').style.display = 'none';
+            document.getElementById('trendingTab').style.display = 'block';
+            document.getElementById('searchBtn').style.borderBottom = '2px solid transparent';
+            document.getElementById('searchBtn').style.color = '#666';
+            document.getElementById('reviewsBtn').style.borderBottom = '2px solid transparent';
+            document.getElementById('reviewsBtn').style.color = '#666';
+            document.getElementById('trendingBtn').style.borderBottom = '2px solid #f43f5e';
+            document.getElementById('trendingBtn').style.color = '#f43f5e';
+        }
+
+        function search() {
+            const q = document.getElementById('search').value.toLowerCase();
+            const filtered = phones.filter(p => p.name.toLowerCase().includes(q));
+            const html = filtered.map(p => `
+                <div style="background:white; padding:20px; border-radius:8px; border:1px solid #fbb6ce;">
+                    <div style="font-size:40px; text-align:center; margin-bottom:10px;">📱</div>
+                    <h3 style="margin:0 0 8px 0; color:#1e293b;">${p.name}</h3>
+                    <p style="margin:0 0 10px 0; font-size:13px; color:#666;">${p.year}년 출시</p>
+                    <div style="border-top:1px solid #fbb6ce; padding-top:10px; margin-bottom:10px; font-size:13px;">
+                        <div style="display:flex; justify-content:space-between; margin:5px 0;">
+                            <span>S급:</span><span style="color:#dc2626; font-weight:bold;">₩${p.prices[0]}만</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin:5px 0;">
+                            <span>A급:</span><span style="color:#dc2626; font-weight:bold;">₩${p.prices[1]}만</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin:5px 0;">
+                            <span>B급:</span><span style="color:#dc2626; font-weight:bold;">₩${p.prices[2]}만</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin:5px 0;">
+                            <span>C급:</span><span style="color:#dc2626; font-weight:bold;">₩${p.prices[3]}만</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #fbb6ce; padding-top:10px;">
+                        <span style="color:${p.trend.includes('+') ? '#059669' : '#dc2626'}; font-weight:bold;">${p.trend}</span>
+                        <button style="background:#f43f5e; color:white; padding:6px 12px; border:none; border-radius:4px; cursor:pointer;">상세보기</button>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('phones').innerHTML = html || '<p>검색 결과 없음</p>';
+        }
+
+        function toggleForm() {
+            const form = document.getElementById('form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function addReview() {
+            const phone = document.getElementById('phone').value;
+            const content = document.getElementById('content').value;
+            if (!content.trim()) { alert('내용을 입력하세요'); return; }
+            
+            reviews.unshift({phone, content, date: new Date().toLocaleDateString('ko-KR')});
+            document.getElementById('content').value = '';
+            displayReviews();
+            document.getElementById('form').style.display = 'none';
+        }
+
+        function displayReviews() {
+            const html = reviews.map(r => `
+                <div style="background:white; padding:15px; border-radius:8px; border:1px solid #fbb6ce;">
+                    <h4 style="margin:0; color:#f43f5e;">${r.phone}</h4>
+                    <p style="margin:5px 0; color:#666; font-size:12px;">${r.date}</p>
+                    <p style="margin:5px 0; color:#1e293b;">${r.content}</p>
+                </div>
+            `).join('');
+            document.getElementById('reviews').innerHTML = html || '<p style="color:#666;">후기가 없습니다</p>';
+        }
+
+        // 초기 로드
+        search();
+        displayReviews();
+    </script>
+</body>
+</html>
