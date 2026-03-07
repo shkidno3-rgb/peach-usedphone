@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>피치중고폰</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EL28539GVL"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-EL28539GVL');</script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #fff5f3 0%, #ffe8dc 50%, #fff0e6 100%); color: #1e293b; }
+        .header-premium { background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border-bottom: 1px solid rgba(251, 146, 60, 0.3); box-shadow: 0 10px 30px rgba(251, 146, 60, 0.15); }
+        .card-premium { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(251, 146, 60, 0.1); transition: all 0.3s ease; border: 1px solid rgba(251, 146, 60, 0.2); }
+        .card-premium:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(251, 146, 60, 0.2); border-color: #fb923c; }
+        .section-title { font-size: 32px; font-weight: 700; color: #0f172a; background: linear-gradient(135deg, #fb923c, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .footer-premium { background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); color: #92400e; border-top: 1px solid rgba(251, 146, 60, 0.3); }
+        .tab-button { transition: all 0.3s ease; position: relative; }
+        .tab-button.active::after { content: ''; position: absolute; bottom: -10px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #fb923c, #fbbf24); }
+    </style>
+</head>
+<body>
+    <div style="min-height:100vh; display:flex; flex-direction:column;">
+        <header class="header-premium" style="position:sticky; top:0; z-index:50;">
+            <div style="max-width:1400px; margin:0 auto; padding:20px 40px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="font-size:32px;">🍑</div>
+                        <div>
+                            <h1 style="margin:0; font-size:28px; font-weight:700; color:#92400e;">피치중고폰</h1>
+                            <p style="margin:0; font-size:14px; color:#b45309; font-weight:500;">Premium Used Phone Platform</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; background:rgba(251, 146, 60, 0.15); border:1px solid rgba(251, 146, 60, 0.3); padding:10px 16px; border-radius:8px;">
+                        <span style="font-size:15px; font-weight:600; color:#b45309;">오늘: <span id="visitorCount">0</span>명</span>
+                    </div>
+                </div>
+                <div style="display:flex; gap:32px; border-top:1px solid rgba(251, 146, 60, 0.2); padding-top:16px; flex-wrap:wrap;">
+                    <button onclick="showTab('search')" id="tabSearch" class="tab-button active" style="padding:0; background:none; border:none; font-weight:600; cursor:pointer; font-size:16px; color:#dc2626;">🔍 시세검색</button>
+                    <button onclick="showTab('apple')" id="tabApple" class="tab-button" style="padding:0; background:none; border:none; font-weight:600; cursor:pointer; font-size:16px; color:#92400e;">🍎 APPLE</button>
+                    <button onclick="showTab('samsung')" id="tabSamsung" class="tab-button" style="padding:0; background:none; border:none; font-weight:600; cursor:pointer; font-size:16px; color:#92400e;">삼성</button>
+                    <button onclick="showTab('review')" id="tabReview" class="tab-button" style="padding:0; background:none; border:none; font-weight:600; cursor:pointer; font-size:16px; color:#92400e;">⭐ 후기</button>
+                    <button onclick="showTab('trend')" id="tabTrend" class="tab-button" style="padding:0; background:none; border:none; font-weight:600; cursor:pointer; font-size:16px; color:#92400e;">📈 트렌드</button>
+                    <button onclick="showTab('contact')" id="tabContact" class="tab-button" style="padding:0; background:none; border:none; font-weight:600; cursor:pointer; font-size:16px; color:#92400e;">💬 고객문의</button>
+                    <button onclick="showTab('terms')" id="tabTerms" class="tab-button" style="padding:0; background:none; border:none; font-weight:600; cursor:pointer; font-size:16px; color:#92400e;">📋 이용약관</button>
+                </div>
+            </div>
+        </header>
+
+        <main style="flex:1; max-width:1400px; margin:0 auto; padding:40px; width:100%;">
+            <div id="searchContent" style="display:block;">
+                <input type="text" id="searchInput" placeholder="시세검색..." onkeyup="filter()" style="width:100%; padding:14px 18px; border:1px solid rgba(251, 146, 60, 0.3); border-radius:10px; font-size:16px; margin-bottom:36px;">
+                <h2 class="section-title" style="margin-bottom:8px;">📊 이달의 TOP5</h2>
+                <p style="color:#64748b; font-size:15px; margin-bottom:24px;">가장 인기 있는 중고폰 TOP5를 확인하세요</p>
+                <div id="phones" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:24px;"></div>
+            </div>
+
+            <div id="appleContent" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:8px;">🍎 APPLE</h2>
+                <p style="color:#64748b; font-size:15px; margin-bottom:24px;">iPhone 전 시리즈 가격 정보</p>
+                <div id="applePhones" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:24px; margin-bottom:24px;"></div>
+                <div style="display:flex; justify-content:center; gap:10px; margin-top:24px;">
+                    <button onclick="goToApplePage(1)" id="applePage1" style="padding:8px 12px; background:#fb923c; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">1</button>
+                    <button onclick="goToApplePage(2)" id="applePage2" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">2</button>
+                    <button onclick="goToApplePage(3)" id="applePage3" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">3</button>
+                    <button onclick="goToApplePage(4)" id="applePage4" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">4</button>
+                    <button onclick="goToApplePage(5)" id="applePage5" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">5</button>
+                    <button onclick="goToApplePage(6)" id="applePage6" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">6</button>
+                </div>
+            </div>
+
+            <div id="samsungContent" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:8px;">삼성</h2>
+                <p style="color:#64748b; font-size:15px; margin-bottom:24px;">Galaxy 전 시리즈 가격 정보</p>
+                <div id="samsungPhones" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:24px; margin-bottom:24px;"></div>
+                <div style="display:flex; justify-content:center; gap:10px; margin-top:24px; flex-wrap:wrap;">
+                    <button onclick="goToSamsungPage(1)" id="samsungPage1" style="padding:8px 12px; background:#fb923c; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">1</button>
+                    <button onclick="goToSamsungPage(2)" id="samsungPage2" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">2</button>
+                    <button onclick="goToSamsungPage(3)" id="samsungPage3" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">3</button>
+                    <button onclick="goToSamsungPage(4)" id="samsungPage4" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">4</button>
+                    <button onclick="goToSamsungPage(5)" id="samsungPage5" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">5</button>
+                    <button onclick="goToSamsungPage(6)" id="samsungPage6" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">6</button>
+                    <button onclick="goToSamsungPage(7)" id="samsungPage7" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">7</button>
+                    <button onclick="goToSamsungPage(8)" id="samsungPage8" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">8</button>
+                    <button onclick="goToSamsungPage(9)" id="samsungPage9" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">9</button>
+                    <button onclick="goToSamsungPage(10)" id="samsungPage10" style="padding:8px 12px; background:#e5e7eb; color:#64748b; border:none; border-radius:6px; cursor:pointer; font-weight:600; font-size:14px;">10</button>
+                </div>
+            </div>
+
+            <div id="reviewContent" style="display:none;">
+                <button onclick="toggleForm()" style="background:linear-gradient(135deg, #fb923c, #fbbf24); color:white; padding:12px 24px; border:none; border-radius:8px; font-weight:600; margin-bottom:24px; cursor:pointer; font-size:15px;">+ 후기 작성</button>
+                <div id="form" style="display:none; background:white; padding:24px; border-radius:12px; margin-bottom:24px; border:1px solid #e2e8f0;">
+                    <h3 style="margin-top:0; font-size:17px;">후기 작성</h3>
+                    <select id="phone" style="width:100%; padding:10px; margin:10px 0; border:1px solid #e2e8f0; border-radius:8px; font-size:15px;"><option>선택</option><option>iPhone 15 Pro Max</option><option>Galaxy S24 Ultra</option></select>
+                    <textarea id="content" placeholder="후기 입력..." style="width:100%; padding:10px; height:100px; border:1px solid #e2e8f0; border-radius:8px; margin:10px 0; font-size:15px;"></textarea>
+                    <button onclick="addReview()" style="background:linear-gradient(135deg, #fb923c, #fbbf24); color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; width:100%; font-weight:600; font-size:15px;">등록</button>
+                </div>
+                <div id="reviews" style="display:grid; gap:16px;"></div>
+            </div>
+
+            <div id="trendContent" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:8px;">📈 트렌드</h2>
+                <p style="color:#64748b; font-size:15px; margin-bottom:24px;">실시간 중고폰 시장 동향</p>
+                
+                <div class="card-premium" style="padding:24px; margin-bottom:24px;">
+                    <div style="margin-bottom:20px;">
+                        <h4 style="margin:0 0 12px 0; color:#0f172a; font-size:14px; font-weight:600;">⬆️ 상승 모델 TOP 5</h4>
+                        <div style="display:grid; gap:8px;">
+                            <div style="padding:10px; background:#f0fdf4; border-left:4px solid #10b981; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">1. Galaxy S24 Ultra (+3.2%)</p></div>
+                            <div style="padding:10px; background:#f0fdf4; border-left:4px solid #10b981; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">2. Galaxy S24+ (+2.9%)</p></div>
+                            <div style="padding:10px; background:#f0fdf4; border-left:4px solid #10b981; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">3. Galaxy S24 (+2.6%)</p></div>
+                            <div style="padding:10px; background:#f0fdf4; border-left:4px solid #10b981; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">4. iPhone 14 Pro Max (+2.3%)</p></div>
+                            <div style="padding:10px; background:#f0fdf4; border-left:4px solid #10b981; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">5. iPhone 15 (+1.8%)</p></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:20px;">
+                        <h4 style="margin:0 0 12px 0; color:#0f172a; font-size:14px; font-weight:600;">💰 최고가 모델 TOP 5</h4>
+                        <div style="display:grid; gap:8px;">
+                            <div style="padding:10px; background:#eff6ff; border-left:4px solid #3b82f6; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">1. Galaxy Z Fold6 (212만원)</p></div>
+                            <div style="padding:10px; background:#eff6ff; border-left:4px solid #3b82f6; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">2. Galaxy Z Fold5 (181만원)</p></div>
+                            <div style="padding:10px; background:#eff6ff; border-left:4px solid #3b82f6; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">3. Galaxy Z Fold4 (130만원)</p></div>
+                            <div style="padding:10px; background:#eff6ff; border-left:4px solid #3b82f6; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">4. iPhone 15 Pro Max (140만원)</p></div>
+                            <div style="padding:10px; background:#eff6ff; border-left:4px solid #3b82f6; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">5. Galaxy Z Flip6 (140만원)</p></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 style="margin:0 0 12px 0; color:#0f172a; font-size:14px; font-weight:600;">⭐ 인기 모델 TOP 5</h4>
+                        <div style="display:grid; gap:8px;">
+                            <div style="padding:10px; background:#faf5ff; border-left:4px solid #a855f7; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">1. iPhone 15 Pro Max</p></div>
+                            <div style="padding:10px; background:#faf5ff; border-left:4px solid #a855f7; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">2. Galaxy S24 Ultra</p></div>
+                            <div style="padding:10px; background:#faf5ff; border-left:4px solid #a855f7; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">3. iPhone 15</p></div>
+                            <div style="padding:10px; background:#faf5ff; border-left:4px solid #a855f7; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">4. Galaxy S24</p></div>
+                            <div style="padding:10px; background:#faf5ff; border-left:4px solid #a855f7; border-radius:4px; font-size:12px;"><p style="margin:0; color:#0f172a; font-weight:600;">5. iPhone 14 Pro Max</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:24px;">
+                    <div class="card-premium" style="padding:20px; text-align:center;"><p style="color:#64748b; margin:0 0 8px 0; font-size:15px;">오늘 방문자</p><p style="font-size:32px; font-weight:700; color:#fb923c; margin:0;">3,847</p></div>
+                    <div class="card-premium" style="padding:20px; text-align:center;"><p style="color:#64748b; margin:0 0 8px 0; font-size:15px;">이번주</p><p style="font-size:32px; font-weight:700; color:#3b82f6; margin:0;">24,568</p></div>
+                    <div class="card-premium" style="padding:20px; text-align:center;"><p style="color:#64748b; margin:0 0 8px 0; font-size:15px;">이번달</p><p style="font-size:32px; font-weight:700; color:#8b5cf6; margin:0;">98,234</p></div>
+                    <div class="card-premium" style="padding:20px; text-align:center;"><p style="color:#64748b; margin:0 0 8px 0; font-size:15px;">누적</p><p style="font-size:32px; font-weight:700; color:#ec4899; margin:0;">1,245,680</p></div>
+                </div>
+
+                <div class="card-premium" style="padding:24px;">
+                    <h3 style="margin-top:0; color:#0f172a; font-size:17px; font-weight:700; margin-bottom:16px;">판매량 순위</h3>
+                    <canvas id="trendChart" style="max-height:300px;"></canvas>
+                </div>
+            </div>
+
+            <div id="contactContent" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:24px;">💬 고객문의</h2>
+                <button onclick="toggleContactForm()" style="background:linear-gradient(135deg, #fb923c, #fbbf24); color:white; padding:12px 24px; border:none; border-radius:8px; font-weight:600; margin-bottom:24px; cursor:pointer; font-size:15px;">+ 문의하기</button>
+                <div id="contactForm" style="display:none; background:white; padding:24px; border-radius:12px; margin-bottom:24px; border:1px solid #e2e8f0;">
+                    <h3 style="margin-top:0; font-size:17px;">문의 작성</h3>
+                    <input type="text" id="contactName" placeholder="이름" style="width:100%; padding:10px; margin:10px 0; border:1px solid #e2e8f0; border-radius:8px; font-size:15px;">
+                    <input type="email" id="contactEmail" placeholder="이메일" style="width:100%; padding:10px; margin:10px 0; border:1px solid #e2e8f0; border-radius:8px; font-size:15px;">
+                    <select id="contactType" style="width:100%; padding:10px; margin:10px 0; border:1px solid #e2e8f0; border-radius:8px; font-size:15px;"><option>문의 종류 선택</option><option>상품 관련</option><option>거래 관련</option><option>결제 관련</option><option>기타</option></select>
+                    <textarea id="contactContent" placeholder="문의 내용을 입력하세요..." style="width:100%; padding:10px; height:120px; border:1px solid #e2e8f0; border-radius:8px; margin:10px 0; font-size:15px;"></textarea>
+                    <button onclick="submitContact()" style="background:linear-gradient(135deg, #fb923c, #fbbf24); color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; width:100%; font-weight:600; font-size:15px;">전송</button>
+                </div>
+                <div id="contacts" style="display:grid; gap:16px;"></div>
+            </div>
+
+            <div id="termsContent" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:24px;">📋 이용약관</h2>
+                <div class="card-premium" style="padding:24px; margin-bottom:20px;"><h3 style="margin-top:0; font-size:17px; font-weight:700;">1. 서비스 이용 규정</h3><p style="color:#475569; font-size:14px; line-height:1.8; margin:0;">피치중고폰은 중고 휴대폰의 거래를 중개하는 플랫폼입니다. 정확한 개인정보 제공, 계정 비밀번호 안전 관리, 거래 사기 행위 금지가 필수입니다.</p></div>
+                <div class="card-premium" style="padding:24px; margin-bottom:20px;"><h3 style="margin-top:0; font-size:17px; font-weight:700;">2. 중고폰 구매 및 판매</h3><p style="color:#475569; font-size:14px; line-height:1.8; margin:0;">S급~C급 등급 기준을 명확히 제시합니다. 구매자는 상품 수령 후 7일 내 결함 확인, 14일 내 환불이 가능합니다. 판매자는 정확한 정보 기재와 배송 추적이 필수입니다.</p></div>
+                <div class="card-premium" style="padding:24px;"><h3 style="margin-top:0; font-size:17px; font-weight:700;">3. 개인정보보호 및 분쟁해결</h3><p style="color:#475569; font-size:14px; line-height:1.8; margin:0;">회사는 거래 중개자로서 개인정보를 보호하며, 상품 품질 책임은 판매자에게 있습니다. 분쟁은 상호 협의로 해결하며, 대한민국 법률을 준거법으로 합니다.</p></div>
+            </div>
+        </main>
+
+        <footer class="footer-premium" style="margin-top:60px;">
+            <div style="max-width:1400px; margin:0 auto; padding:48px 40px;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:40px; margin-bottom:40px;">
+                    <div><h3 style="margin-top:0; color:#92400e; font-size:17px; font-weight:700; margin-bottom:12px;">🍑 피치중고폰</h3><p style="color:#92400e; font-size:14px; line-height:1.6; margin:0;">신뢰할 수 있는 중고폰 거래 플랫폼</p></div>
+                    <div><h3 style="margin-top:0; color:#92400e; font-size:17px; font-weight:700; margin-bottom:12px;">📍 주소</h3><p style="color:#92400e; font-size:14px; margin:0;">광주광역시 북구 신용동 712, 1층</p></div>
+                    <div><h3 style="margin-top:0; color:#92400e; font-size:17px; font-weight:700; margin-bottom:12px;">📞 연락처</h3><p style="color:#92400e; font-size:14px; margin:0;">📱 010-2004-4464<br/>📧 shkidno3@gmail.com</p></div>
+                </div>
+                <div style="border-top:1px solid rgba(251, 146, 60, 0.3); padding-top:24px; text-align:center;">
+                    <p style="margin:0; color:#92400e; font-size:13px;">© 2024 피치중고폰. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const iphones = [
+            {name: 'iPhone 17 Pro Max', year: 2025, prices: [180, 170, 160, 150], trend: '+5.2%'},
+            {name: 'iPhone 17 Pro', year: 2025, prices: [170, 160, 150, 140], trend: '+4.8%'},
+            {name: 'iPhone 17 Plus', year: 2025, prices: [150, 140, 130, 120], trend: '+4.5%'},
+            {name: 'iPhone 17', year: 2025, prices: [130, 120, 110, 100], trend: '+4.2%'},
+            {name: 'iPhone 16 Pro Max', year: 2024, prices: [160, 150, 140, 130], trend: '+3.8%'},
+            {name: 'iPhone 16 Pro', year: 2024, prices: [150, 140, 130, 120], trend: '+3.5%'},
+            {name: 'iPhone 16 Plus', year: 2024, prices: [130, 120, 110, 100], trend: '+3.2%'},
+            {name: 'iPhone 16', year: 2024, prices: [120, 110, 100, 90], trend: '+2.9%'},
+            {name: 'iPhone 15 Pro Max', year: 2023, prices: [140, 130, 120, 110], trend: '+2.5%'},
+            {name: 'iPhone 15 Pro', year: 2023, prices: [130, 120, 110, 100], trend: '+2.2%'},
+            {name: 'iPhone 15 Plus', year: 2023, prices: [120, 110, 100, 90], trend: '+1.9%'},
+            {name: 'iPhone 15', year: 2023, prices: [110, 100, 90, 80], trend: '+1.8%'},
+            {name: 'iPhone SE (3rd Gen)', year: 2022, prices: [35, 32, 29, 25], trend: '+0.5%'},
+            {name: 'iPhone 14 Pro Max', year: 2022, prices: [70, 65, 60, 54], trend: '+2.3%'},
+            {name: 'iPhone 14 Pro', year: 2022, prices: [65, 60, 55, 50], trend: '+2.0%'},
+            {name: 'iPhone 14 Plus', year: 2022, prices: [60, 55, 50, 45], trend: '+1.7%'},
+            {name: 'iPhone 14', year: 2022, prices: [55, 50, 45, 40], trend: '+1.5%'},
+            {name: 'iPhone 13 Pro Max', year: 2021, prices: [65, 60, 55, 50], trend: '+1.9%'},
+            {name: 'iPhone 13 Pro', year: 2021, prices: [58, 54, 50, 45], trend: '+1.8%'},
+            {name: 'iPhone 13 mini', year: 2021, prices: [40, 38, 35, 30], trend: '+0.8%'},
+            {name: 'iPhone 13', year: 2021, prices: [45, 42, 38, 33], trend: '+1.2%'},
+            {name: 'iPhone SE (2nd Gen)', year: 2020, prices: [25, 23, 21, 18], trend: '+0.3%'},
+            {name: 'iPhone 12 Pro Max', year: 2020, prices: [50, 46, 42, 37], trend: '-0.2%'},
+            {name: 'iPhone 12 Pro', year: 2020, prices: [47, 43, 39, 35], trend: '-0.3%'},
+            {name: 'iPhone 12 mini', year: 2020, prices: [35, 32, 30, 27], trend: '-0.8%'},
+            {name: 'iPhone 12', year: 2020, prices: [44, 41, 38, 33], trend: '-0.5%'},
+            {name: 'iPhone 11 Pro Max', year: 2019, prices: [38, 35, 32, 28], trend: '-1.1%'},
+            {name: 'iPhone 11 Pro', year: 2019, prices: [35, 32, 29, 25], trend: '-1.0%'},
+            {name: 'iPhone 11', year: 2019, prices: [30, 27, 25, 21], trend: '-1.3%'},
+            {name: 'iPhone XS Max', year: 2018, prices: [25, 23, 21, 18], trend: '-1.5%'},
+            {name: 'iPhone XS', year: 2018, prices: [20, 18, 16, 14], trend: '-1.6%'},
+            {name: 'iPhone XR', year: 2018, prices: [22, 20, 18, 16], trend: '-1.4%'},
+            {name: 'iPhone X', year: 2017, prices: [18, 16, 14, 12], trend: '-2.0%'},
+            {name: 'iPhone 8 Plus', year: 2017, prices: [15, 13, 12, 10], trend: '-2.2%'},
+            {name: 'iPhone 8', year: 2017, prices: [12, 11, 10, 8], trend: '-2.3%'},
+            {name: 'iPhone 7 Plus', year: 2016, prices: [10, 9, 8, 6], trend: '-2.8%'},
+            {name: 'iPhone 7', year: 2016, prices: [9, 8, 7, 5], trend: '-2.9%'},
+            {name: 'iPhone SE (1st Gen)', year: 2016, prices: [8, 7, 6, 5], trend: '-3.8%'},
+            {name: 'iPhone 6s Plus', year: 2015, prices: [8, 7, 6, 5], trend: '-3.2%'},
+            {name: 'iPhone 6s', year: 2015, prices: [7, 6, 5, 4], trend: '-3.1%'},
+            {name: 'iPhone 6 Plus', year: 2014, prices: [6, 5, 4, 3], trend: '-3.5%'},
+            {name: 'iPhone 6', year: 2014, prices: [5, 4, 3, 2], trend: '-3.6%'},
+            {name: 'iPhone 5s', year: 2013, prices: [4, 3, 2, 1], trend: '-4.0%'},
+            {name: 'iPhone 5c', year: 2013, prices: [3, 2, 1, 0.5], trend: '-4.2%'},
+            {name: 'iPhone 5', year: 2012, prices: [2, 1, 0.5, 0.2], trend: '-4.5%'}
+        ];
+
+        const galaxies = [
+            {name: 'Galaxy S26 Ultra', year: 2026, prices: [190, 180, 170, 160], trend: '+6.5%'},
+            {name: 'Galaxy S26+', year: 2026, prices: [170, 160, 150, 140], trend: '+6.2%'},
+            {name: 'Galaxy S26', year: 2026, prices: [155, 145, 135, 125], trend: '+5.9%'},
+            {name: 'Galaxy Z Fold7', year: 2026, prices: [240, 225, 210, 195], trend: '+5.5%'},
+            {name: 'Galaxy Z Flip7', year: 2026, prices: [160, 150, 140, 130], trend: '+5.1%'},
+            {name: 'Galaxy S25 Ultra', year: 2025, prices: [170, 160, 150, 140], trend: '+4.8%'},
+            {name: 'Galaxy S25+', year: 2025, prices: [150, 140, 130, 120], trend: '+4.5%'},
+            {name: 'Galaxy S25', year: 2025, prices: [135, 125, 115, 105], trend: '+4.2%'},
+            {name: 'Galaxy Z Fold6', year: 2024, prices: [210, 195, 180, 165], trend: '+2.1%'},
+            {name: 'Galaxy Z Flip6', year: 2024, prices: [140, 130, 120, 110], trend: '+1.9%'},
+            {name: 'Galaxy S24 Ultra', year: 2024, prices: [145, 135, 125, 115], trend: '+3.2%'},
+            {name: 'Galaxy S24+', year: 2024, prices: [125, 115, 105, 95], trend: '+2.9%'},
+            {name: 'Galaxy S24', year: 2024, prices: [110, 100, 90, 80], trend: '+2.6%'},
+            {name: 'Galaxy S24 FE', year: 2024, prices: [65, 60, 55, 50], trend: '+1.8%'},
+            {name: 'Galaxy S23 Ultra', year: 2023, prices: [75, 70, 65, 58], trend: '+2.1%'},
+            {name: 'Galaxy S23+', year: 2023, prices: [68, 63, 58, 52], trend: '+1.9%'},
+            {name: 'Galaxy S23', year: 2023, prices: [65, 60, 55, 50], trend: '+1.7%'},
+            {name: 'Galaxy S23 FE', year: 2023, prices: [42, 39, 36, 31], trend: '+1.3%'},
+            {name: 'Galaxy Z Fold5', year: 2023, prices: [180, 165, 150, 135], trend: '+1.4%'},
+            {name: 'Galaxy Z Flip5', year: 2023, prices: [110, 100, 90, 80], trend: '+1.2%'},
+            {name: 'Galaxy A54', year: 2023, prices: [38, 35, 32, 28], trend: '+1.4%'},
+            {name: 'Galaxy A34', year: 2023, prices: [28, 26, 24, 21], trend: '+0.9%'},
+            {name: 'Galaxy A14', year: 2023, prices: [18, 16, 14, 12], trend: '+0.3%'},
+            {name: 'Galaxy S22 Ultra', year: 2022, prices: [65, 60, 55, 50], trend: '+1.1%'},
+            {name: 'Galaxy S22+', year: 2022, prices: [58, 54, 50, 45], trend: '+0.9%'},
+            {name: 'Galaxy S22', year: 2022, prices: [48, 45, 41, 36], trend: '+0.9%'},
+            {name: 'Galaxy Z Fold4', year: 2022, prices: [130, 120, 110, 100], trend: '+0.8%'},
+            {name: 'Galaxy Z Flip4', year: 2022, prices: [90, 82, 74, 66], trend: '+0.5%'},
+            {name: 'Galaxy A53', year: 2022, prices: [31, 28, 25, 21], trend: '+1.2%'},
+            {name: 'Galaxy A13', year: 2022, prices: [15, 13, 12, 10], trend: '+0.1%'},
+            {name: 'Galaxy S21 Ultra', year: 2021, prices: [45, 42, 38, 33], trend: '+0.6%'},
+            {name: 'Galaxy S21+', year: 2021, prices: [40, 37, 34, 30], trend: '+0.4%'},
+            {name: 'Galaxy S21', year: 2021, prices: [38, 35, 32, 28], trend: '+0.4%'},
+            {name: 'Galaxy S21 FE', year: 2021, prices: [28, 26, 24, 20], trend: '+0.2%'},
+            {name: 'Galaxy Z Fold3', year: 2021, prices: [95, 88, 80, 72], trend: '-0.2%'},
+            {name: 'Galaxy A52', year: 2021, prices: [25, 23, 20, 17], trend: '+0.8%'},
+            {name: 'Galaxy S20 Ultra', year: 2020, prices: [32, 29, 26, 23], trend: '-0.8%'},
+            {name: 'Galaxy S20+', year: 2020, prices: [28, 25, 22, 19], trend: '-0.9%'},
+            {name: 'Galaxy S20', year: 2020, prices: [24, 21, 19, 16], trend: '-1.0%'},
+            {name: 'Galaxy A51', year: 2020, prices: [20, 18, 16, 14], trend: '+0.5%'},
+            {name: 'Galaxy S10+', year: 2019, prices: [20, 18, 16, 14], trend: '-1.5%'},
+            {name: 'Galaxy S10', year: 2019, prices: [18, 16, 14, 12], trend: '-1.6%'},
+            {name: 'Galaxy S10 Lite', year: 2019, prices: [15, 13, 12, 10], trend: '-1.7%'},
+            {name: 'Galaxy S9+', year: 2018, prices: [15, 13, 12, 10], trend: '-2.2%'},
+            {name: 'Galaxy S9', year: 2018, prices: [12, 11, 10, 8], trend: '-2.3%'},
+            {name: 'Galaxy S8+', year: 2017, prices: [12, 11, 10, 8], trend: '-2.8%'},
+            {name: 'Galaxy S8', year: 2017, prices: [10, 9, 8, 6], trend: '-2.9%'},
+            {name: 'Galaxy S7 Edge', year: 2016, prices: [8, 7, 6, 5], trend: '-3.2%'},
+            {name: 'Galaxy S7', year: 2016, prices: [7, 6, 5, 4], trend: '-3.3%'}
+        ];
+
+        const phones = [...iphones, ...galaxies];
+        let reviews = [];
+        let contacts = [];
+
+        function goToApplePage(page) {
+            const itemsPerPage = 8;
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pagePhones = iphones.slice(start, end);
+            displayPhones(pagePhones, 'applePhones');
+            
+            for(let i = 1; i <= 6; i++) {
+                const el = document.getElementById('applePage' + i);
+                el.style.background = i === page ? '#fb923c' : '#e5e7eb';
+                el.style.color = i === page ? 'white' : '#64748b';
+            }
+        }
+
+        function goToSamsungPage(page) {
+            const itemsPerPage = 5;
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pagePhones = galaxies.slice(start, end);
+            displayPhones(pagePhones, 'samsungPhones');
+            
+            for(let i = 1; i <= 10; i++) {
+                const el = document.getElementById('samsungPage' + i);
+                el.style.background = i === page ? '#fb923c' : '#e5e7eb';
+                el.style.color = i === page ? 'white' : '#64748b';
+            }
+        }
+
+        function displayPhones(phoneList, elementId) {
+            const html = phoneList.map(p => `
+                <div class="card-premium">
+                    <div style="height:160px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-bottom:1px solid rgba(251, 146, 60, 0.2);">
+                        <div style="font-size:60px;">📱</div>
+                    </div>
+                    <div style="padding:16px;">
+                        <h3 style="margin:0 0 6px 0; font-size:16px; font-weight:700; color:#0f172a;">${p.name}</h3>
+                        <p style="margin:0 0 10px 0; font-size:13px; color:#64748b;">${p.year}년</p>
+                        <div style="background:#f8fafc; padding:8px; border-radius:6px; margin-bottom:10px; font-size:13px;">
+                            <div style="display:flex; justify-content:space-between; margin:3px 0;"><span>S급</span><span style="color:#dc2626; font-weight:bold;">₩${p.prices[0]}만</span></div>
+                            <div style="display:flex; justify-content:space-between; margin:3px 0;"><span>A급</span><span style="color:#dc2626; font-weight:bold;">₩${p.prices[1]}만</span></div>
+                            <div style="display:flex; justify-content:space-between; margin:3px 0;"><span>B급</span><span style="color:#dc2626; font-weight:bold;">₩${p.prices[2]}만</span></div>
+                            <div style="display:flex; justify-content:space-between; margin:3px 0;"><span>C급</span><span style="color:#dc2626; font-weight:bold;">₩${p.prices[3]}만</span></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:8px;">
+                            <span style="color:${p.trend.includes('+') ? '#10b981' : '#ef4444'}; font-weight:600; font-size:12px;">${p.trend}</span>
+                            <button style="background:linear-gradient(135deg, #fb923c, #fbbf24); color:white; padding:4px 10px; border:none; border-radius:4px; cursor:pointer; font-size:12px; font-weight:600;">상세</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById(elementId).innerHTML = html;
+        }
+
+        function filter() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            let filtered = phones.filter(p => p.name.toLowerCase().includes(q));
+            displayPhones(filtered, 'phones');
+        }
+
+        function showTab(tab) {
+            document.getElementById('searchContent').style.display = tab === 'search' ? 'block' : 'none';
+            document.getElementById('appleContent').style.display = tab === 'apple' ? 'block' : 'none';
+            document.getElementById('samsungContent').style.display = tab === 'samsung' ? 'block' : 'none';
+            document.getElementById('reviewContent').style.display = tab === 'review' ? 'block' : 'none';
+            document.getElementById('trendContent').style.display = tab === 'trend' ? 'block' : 'none';
+            document.getElementById('contactContent').style.display = tab === 'contact' ? 'block' : 'none';
+            document.getElementById('termsContent').style.display = tab === 'terms' ? 'block' : 'none';
+            updateTabStyles(tab);
+            
+            if (tab === 'search') displayPhones(phones.slice(0, 5), 'phones');
+            else if (tab === 'apple') goToApplePage(1);
+            else if (tab === 'samsung') goToSamsungPage(1);
+            else if (tab === 'trend') initTrendChart();
+        }
+
+        function updateTabStyles(tab) {
+            ['tabSearch', 'tabApple', 'tabSamsung', 'tabReview', 'tabTrend', 'tabContact', 'tabTerms'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) { el.style.color = '#92400e'; el.classList.remove('active'); }
+            });
+            const map = {search: 'tabSearch', apple: 'tabApple', samsung: 'tabSamsung', review: 'tabReview', trend: 'tabTrend', contact: 'tabContact', terms: 'tabTerms'};
+            if (map[tab]) {
+                document.getElementById(map[tab]).style.color = '#dc2626';
+                document.getElementById(map[tab]).classList.add('active');
+            }
+        }
+
+        function toggleForm() { document.getElementById('form').style.display = document.getElementById('form').style.display === 'none' ? 'block' : 'none'; }
+        function toggleContactForm() { document.getElementById('contactForm').style.display = document.getElementById('contactForm').style.display === 'none' ? 'block' : 'none'; }
+
+        function addReview() {
+            const phone = document.getElementById('phone').value;
+            const content = document.getElementById('content').value;
+            if (!content.trim()) { alert('내용을 입력하세요'); return; }
+            reviews.unshift({phone, content, date: new Date().toLocaleDateString('ko-KR')});
+            document.getElementById('content').value = '';
+            displayReviews();
+            document.getElementById('form').style.display = 'none';
+        }
+
+        function displayReviews() {
+            const html = reviews.map(r => `<div class="card-premium" style="padding:16px;"><h4 style="margin:0; color:#fb923c; font-weight:700;">${r.phone}</h4><p style="margin:5px 0; color:#64748b; font-size:13px;">${r.date}</p><p style="margin:5px 0; color:#1e293b; font-size:14px;">${r.content}</p></div>`).join('');
+            document.getElementById('reviews').innerHTML = html || '<p>후기가 없습니다</p>';
+        }
+
+        function submitContact() {
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const type = document.getElementById('contactType').value;
+            const content = document.getElementById('contactContent').value;
+            if (!name.trim() || !email.trim() || type === '문의 종류 선택' || !content.trim()) { alert('모든 항목을 입력해주세요'); return; }
+            contacts.unshift({name, email, type, content, date: new Date().toLocaleDateString('ko-KR')});
+            document.getElementById('contactName').value = '';
+            document.getElementById('contactEmail').value = '';
+            document.getElementById('contactType').value = '문의 종류 선택';
+            document.getElementById('contactContent').value = '';
+            displayContacts();
+            document.getElementById('contactForm').style.display = 'none';
+            alert('문의가 접수되었습니다. 감사합니다!');
+        }
+
+        function displayContacts() {
+            const html = contacts.map(c => `<div class="card-premium" style="padding:16px;"><div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:8px;"><div><h4 style="margin:0; color:#fb923c; font-weight:700; font-size:15px;">${c.name}</h4><p style="margin:3px 0; color:#64748b; font-size:13px;">${c.email}</p></div><span style="background:#fb923c; color:white; padding:4px 8px; border-radius:4px; font-size:12px; font-weight:600;">${c.type}</span></div><p style="margin:8px 0 0 0; color:#1e293b; font-size:14px; line-height:1.6;">${c.content}</p><p style="margin:8px 0 0 0; color:#94a3b8; font-size:12px;">${c.date}</p></div>`).join('');
+            document.getElementById('contacts').innerHTML = html || '<p style="color:#64748b; font-size:15px;">문의가 없습니다</p>';
+        }
+
+        function initTrendChart() {
+            const ctx = document.getElementById('trendChart');
+            if (!ctx) return;
+            const topSales = [
+                { name: 'Galaxy S24 Ultra', sales: 15420, brand: 'samsung' },
+                { name: 'iPhone 15 Pro Max', sales: 14850, brand: 'apple' },
+                { name: 'Galaxy Z Fold6', sales: 12340, brand: 'samsung' },
+                { name: 'iPhone 15 Pro', sales: 11200, brand: 'apple' },
+                { name: 'Galaxy S24', sales: 10890, brand: 'samsung' }
+            ];
+            const colors = topSales.map(d => d.brand === 'samsung' ? '#3b82f6' : '#ef4444');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: topSales.map(d => d.name),
+                    datasets: [{label: '판매량', data: topSales.map(d => d.sales), backgroundColor: colors, borderRadius: 6, borderSkipped: false}]
+                },
+                options: {
+                    indexAxis: 'x',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {legend: { display: false }},
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {color: '#64748b', callback: function(value) { return value.toLocaleString() + '개'; }},
+                            grid: { color: 'rgba(251, 146, 60, 0.1)' }
+                        },
+                        x: {ticks: { color: '#64748b', font: { size: 13 } }, grid: { display: false }}
+                    }
+                }
+            });
+        }
+
+        function recordVisitor() {
+            const today = new Date().toISOString().split('T')[0];
+            const key = 'peach_visitors_' + today;
+            let count = localStorage.getItem(key) || 0;
+            count = parseInt(count) + 1;
+            localStorage.setItem(key, count);
+            document.getElementById('visitorCount').textContent = count.toLocaleString();
+        }
+
+        window.addEventListener('load', function() {
+            displayPhones(phones.slice(0, 5), 'phones');
+            displayReviews();
+            displayContacts();
+            recordVisitor();
+        });
+    </script>
+</body>
+</html>
